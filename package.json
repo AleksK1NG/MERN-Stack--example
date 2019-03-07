@@ -1,0 +1,33 @@
+{
+  "name": "mern-stack--example",
+  "version": "1.0.0",
+  "description": "mern",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleksK1NG/MERN-Stack--example.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "Alexander Bryksin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AleksK1NG/MERN-Stack--example/issues"
+  },
+  "homepage": "https://github.com/AleksK1NG/MERN-Stack--example#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "concurrently": "^4.1.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.17"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
