@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const Item = require('./models/Item');
+const itemsRoutes = require('./routes/api/items');
 
 const app = express();
 
@@ -27,6 +27,11 @@ mongoose
   .catch((err) => {
     console.error(err);
   });
+
+/*
+ * Routes
+ * */
+app.use('/api/items', itemsRoutes);
 
 /*
  *   Run server
