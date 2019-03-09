@@ -13,6 +13,8 @@ const prefix = `${appName}/${moduleName}`;
 
 export const ADD_ITEM = `${prefix}/ADD_ITEM`;
 export const GET_ITEMS = `${prefix}/GET_ITEMS`;
+export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
+export const GET_ITEMS_ERROR = `${prefix}/GET_ITEMS_ERROR`;
 export const DELETE_ITEM = `${prefix}/DELETE_ITEM`;
 
 /**
@@ -56,14 +58,6 @@ export const userSelector = (state) => state[moduleName].user;
 export const itemsSelector = createSelector(
   stateSelector,
   (state) => state.items
-);
-export const isAuthorizedSelector = createSelector(
-  userSelector,
-  (user) => !!user
-);
-export const authError = createSelector(
-  stateSelector,
-  (state) => state.error
 );
 
 /**

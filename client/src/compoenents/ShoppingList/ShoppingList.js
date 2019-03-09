@@ -21,27 +21,26 @@ const ShoppingList = (props) => {
       >
         Add Item
       </Button>
+
       <ListGroup>
-        {props.items &&
-          props.items.map((item) => (
-            <React.Fragment>
-              <TransitionGroup className="shopping-list">
-                <CSSTransition key={item.id} timeout={500} classNames="fade">
-                  <ListGroupItem>
-                    <Button
-                      className="remove-btn"
-                      color="danger"
-                      size="sm"
-                      onClick={() => props.deleteItem(item.id)}
-                    >
-                      &times;
-                    </Button>
-                    {item.name}
-                  </ListGroupItem>
-                </CSSTransition>
-              </TransitionGroup>
-            </React.Fragment>
-          ))}
+        <TransitionGroup className="shopping-list">
+          {props.items &&
+            props.items.map((item) => (
+              <CSSTransition key={item.id} timeout={500} classNames="fade">
+                <ListGroupItem>
+                  <Button
+                    className="remove-btn"
+                    color="danger"
+                    size="sm"
+                    onClick={() => props.deleteItem(item.id)}
+                  >
+                    &times;
+                  </Button>
+                  {item.name}
+                </ListGroupItem>
+              </CSSTransition>
+            ))}
+        </TransitionGroup>
       </ListGroup>
     </Container>
   );
