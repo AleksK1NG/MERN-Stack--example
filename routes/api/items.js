@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 
 /*
  * @route POST api/items
- * Create post
+ * Create item
  * @ Public
  * */
 router.post('/', (req, res) => {
@@ -36,6 +36,24 @@ router.post('/', (req, res) => {
     .save()
     .then((item) => {
       res.status(200).json(item);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+
+/*
+ * @route DELETE api/items/:id
+ * DELETE item
+ * @ Public
+ * */
+router.delete('/:id', (req, res) => {
+  Item.findById(req.params.id)
+    .then((item) => {
+      item.remove().then(() => res.status(200).json({ success: true }));
     })
     .catch((err) => {
       console.log(err);
