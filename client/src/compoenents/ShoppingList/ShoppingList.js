@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem, Container, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { addItem, itemsSelector } from '../../ducks/items';
+import { addItem, deleteItem, itemsSelector } from '../../ducks/items';
 
 const ShoppingList = (props) => {
   const handleAddItem = () => {
@@ -21,7 +21,28 @@ const ShoppingList = (props) => {
       >
         Add Item
       </Button>
-      <ListGroup>{JSON.stringify(props.items, null, 2)}</ListGroup>
+      <ListGroup>
+        {props.items &&
+          props.items.map((item) => (
+            <React.Fragment>
+              <TransitionGroup className="shopping-list">
+                <CSSTransition key={item.id} timeout={500} classNames="fade">
+                  <ListGroupItem>
+                    <Button
+                      className="remove-btn"
+                      color="danger"
+                      size="sm"
+                      onClick={() => props.deleteItem(item.id)}
+                    >
+                      &times;
+                    </Button>
+                    {item.name}
+                  </ListGroupItem>
+                </CSSTransition>
+              </TransitionGroup>
+            </React.Fragment>
+          ))}
+      </ListGroup>
     </Container>
   );
 };
@@ -30,5 +51,5 @@ export default connect(
   (state) => ({
     items: itemsSelector(state)
   }),
-  { addItem }
+  { addItem, deleteItem }
 )(ShoppingList);

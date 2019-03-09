@@ -78,7 +78,7 @@ export const addItem = (name) => {
 
 export const deleteItem = (id) => {
   return {
-    type: ADD_ITEM,
+    type: DELETE_ITEM,
     payload: { id }
   };
 };
