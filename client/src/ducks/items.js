@@ -18,6 +18,9 @@ export const GET_ITEMS_START = `${prefix}/GET_ITEMS`;
 export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
 export const GET_ITEMS_ERROR = `${prefix}/GET_ITEMS_ERROR`;
 export const DELETE_ITEM = `${prefix}/DELETE_ITEM`;
+export const DELETE_ITEM_REQUEST = `${prefix}/DELETE_ITEM_REQUEST`;
+export const DELETE_ITEM_SUCCESS = `${prefix}/DELETE_ITEM_SUCCESS`;
+export const DELETE_ITEM_ERROR = `${prefix}/DELETE_ITEM_ERROR`;
 
 /**
  * Reducer
@@ -35,6 +38,7 @@ export default function reducer(state = new ReducerRecord(), action) {
 
   switch (type) {
     case GET_ITEMS_START:
+    case DELETE_ITEM_REQUEST:
       return state.set('loading', true);
 
     case GET_ITEMS_SUCCESS:
@@ -58,6 +62,14 @@ export default function reducer(state = new ReducerRecord(), action) {
       return state.update('items', (items) =>
         items.filter((item) => item.id !== payload.id)
       );
+
+    case DELETE_ITEM_SUCCESS:
+      return state
+        .set('loading', false)
+        .set('error', null)
+        .update('shoppingList', (shoppingList) =>
+          shoppingList.filter((item) => item._id !== payload)
+        );
 
     default:
       return state;
@@ -91,7 +103,7 @@ export const addItem = (name) => {
 
 export const deleteItem = (id) => {
   return {
-    type: DELETE_ITEM,
+    type: DELETE_ITEM_REQUEST,
     payload: { id }
   };
 };
@@ -146,6 +158,27 @@ export function* getItemsSaga(action) {
   }
 }
 
+export function* deleteItemSaga(action) {
+  const { payload } = action;
+
+  try {
+    yield call(API.deleteItem, payload.id);
+    yield put({
+      type: DELETE_ITEM_SUCCESS,
+      payload: payload.id
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: DELETE_ITEM_ERROR,
+      payload: { err }
+    });
+  }
+}
+
 export function* saga() {
-  yield all([takeEvery(FETCH_ALL_REQUEST, getItemsSaga)]);
+  yield all([
+    takeEvery(FETCH_ALL_REQUEST, getItemsSaga),
+    takeEvery(DELETE_ITEM_REQUEST, deleteItemSaga)
+  ]);
 }
