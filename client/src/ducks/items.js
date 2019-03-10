@@ -17,7 +17,7 @@ export const ADD_ITEM_REQUEST = `${prefix}/ADD_ITEM_REQUEST`;
 export const ADD_ITEM_SUCCESS = `${prefix}/ADD_ITEM_SUCCESS`;
 export const ADD_ITEM_ERROR = `${prefix}/ADD_ITEM_ERROR`;
 export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`;
-export const GET_ITEMS_START = `${prefix}/GET_ITEMS`;
+export const GET_ALL_ITEMS_REQUEST = `${prefix}/GET_ITEMS`;
 export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
 export const GET_ITEMS_ERROR = `${prefix}/GET_ITEMS_ERROR`;
 export const DELETE_ITEM = `${prefix}/DELETE_ITEM`;
@@ -40,7 +40,7 @@ export default function reducer(state = new ReducerRecord(), action) {
   const { type, payload } = action;
 
   switch (type) {
-    case GET_ITEMS_START:
+    case GET_ALL_ITEMS_REQUEST:
     case DELETE_ITEM_REQUEST:
     case ADD_ITEM_REQUEST:
       return state.set('loading', true);
@@ -102,6 +102,10 @@ export const shoppingListSelector = createSelector(
   stateSelector,
   (state) => state.shoppingList
 );
+export const loadingSelector = createSelector(
+  stateSelector,
+  (state) => state.loading
+);
 
 /**
  * Action Creators
@@ -152,7 +156,7 @@ export const getAllItems = () => {
 export function* getItemsSaga(action) {
   try {
     yield put({
-      type: GET_ITEMS_START
+      type: GET_ALL_ITEMS_REQUEST
     });
 
     const { data } = yield call(API.getItems);

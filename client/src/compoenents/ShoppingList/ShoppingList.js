@@ -7,8 +7,10 @@ import {
   deleteItem,
   getAllItems,
   itemsSelector,
-  shoppingListSelector
+  shoppingListSelector,
+  loadingSelector
 } from '../../ducks/items';
+import Loader from '../Shared/Loader/Loader';
 
 const ShoppingList = (props) => {
   useEffect(() => {
@@ -21,6 +23,14 @@ const ShoppingList = (props) => {
       props.addItem({ name: itemName });
     }
   };
+
+  if (props.loading) {
+    return (
+      <Container>
+        <Loader />
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -59,7 +69,8 @@ const ShoppingList = (props) => {
 export default connect(
   (state) => ({
     items: itemsSelector(state),
-    shoppingList: shoppingListSelector(state)
+    shoppingList: shoppingListSelector(state),
+    loading: loadingSelector(state)
   }),
   { addItem, deleteItem, getAllItems }
 )(ShoppingList);
