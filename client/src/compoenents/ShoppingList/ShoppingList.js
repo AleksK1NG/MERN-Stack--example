@@ -2,7 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem, Container, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { addItem, deleteItem, itemsSelector } from '../../ducks/items';
+import {
+  addItem,
+  deleteItem,
+  itemsSelector,
+  shoppingListSelector
+} from '../../ducks/items';
 
 const ShoppingList = (props) => {
   const handleAddItem = () => {
@@ -48,7 +53,8 @@ const ShoppingList = (props) => {
 
 export default connect(
   (state) => ({
-    items: itemsSelector(state)
+    items: itemsSelector(state),
+    shoppingList: shoppingListSelector(state)
   }),
   { addItem, deleteItem }
 )(ShoppingList);

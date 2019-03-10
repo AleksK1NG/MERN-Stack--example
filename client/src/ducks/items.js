@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 import { takeEvery, call, put, all, take } from 'redux-saga/effects';
 import items from '../mocks/shoppingList';
 import uuid from 'uuid';
+import API from '../services/api';
 
 /**
  * Constants
@@ -12,7 +13,8 @@ export const moduleName = 'items';
 const prefix = `${appName}/${moduleName}`;
 
 export const ADD_ITEM = `${prefix}/ADD_ITEM`;
-export const GET_ITEMS = `${prefix}/GET_ITEMS`;
+export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`;
+export const GET_ITEMS_START = `${prefix}/GET_ITEMS`;
 export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
 export const GET_ITEMS_ERROR = `${prefix}/GET_ITEMS_ERROR`;
 export const DELETE_ITEM = `${prefix}/DELETE_ITEM`;
@@ -24,20 +26,33 @@ export const ReducerRecord = Record({
   user: 'Alex',
   error: null,
   loading: false,
-  items: new List(items)
+  items: new List(items),
+  shoppingList: new List([])
 });
 
 export default function reducer(state = new ReducerRecord(), action) {
-  const { type, payload, error } = action;
+  const { type, payload } = action;
 
   switch (type) {
-    case GET_ITEMS:
-      return state.set('items', new List(payload));
+    case GET_ITEMS_START:
+      return state.set('loading', true);
+
+    case GET_ITEMS_SUCCESS:
+      return state
+        .set('shoppingList', new List(payload.data))
+        .set('loading', false)
+        .set('error', null);
+
+    case GET_ITEMS_ERROR:
+      return state.set('error', payload.err).set('loading', false);
 
     case ADD_ITEM:
-      return state.update('items', (items) =>
-        items.push({ id: uuid(), name: payload.name })
-      );
+      return state
+        .update('items', (items) =>
+          items.push({ id: uuid(), name: payload.name })
+        )
+        .set('loading', false)
+        .set('error', null);
 
     case DELETE_ITEM:
       return state.update('items', (items) =>
@@ -59,6 +74,10 @@ export const itemsSelector = createSelector(
   stateSelector,
   (state) => state.items
 );
+export const shoppingListSelector = createSelector(
+  stateSelector,
+  (state) => state.shoppingList
+);
 
 /**
  * Action Creators
@@ -77,6 +96,11 @@ export const deleteItem = (id) => {
   };
 };
 
+export const getAllItems = () => {
+  return {
+    type: FETCH_ALL_REQUEST
+  };
+};
 // export function signIn(email, password) {
 //   return {
 //     type: SIGN_IN_REQUEST,
@@ -101,6 +125,27 @@ export const deleteItem = (id) => {
  * Sagas
  */
 
+export function* getItemsSaga(action) {
+  try {
+    yield put({
+      type: GET_ITEMS_START
+    });
+
+    const { data } = yield call(API.getItems);
+    console.log('(from get items saga) => ', data);
+    yield put({
+      type: GET_ITEMS_SUCCESS,
+      payload: { data }
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: GET_ITEMS_ERROR,
+      payload: { err }
+    });
+  }
+}
+
 export function* saga() {
-  yield all([]);
+  yield all([takeEvery(FETCH_ALL_REQUEST, getItemsSaga)]);
 }

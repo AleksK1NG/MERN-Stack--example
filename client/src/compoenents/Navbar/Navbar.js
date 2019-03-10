@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { setName, userSelector } from '../../ducks/auth';
+import { getAllItems } from '../../ducks/items';
 
 const Navbar = (props) => {
+  useEffect(() => {
+    props.getAllItems();
+    console.log('use effect navbar');
+  }, []);
+
   return (
     <div>
       <h2>Navbar test component</h2>
@@ -20,5 +26,5 @@ export default connect(
   (state) => ({
     user: userSelector(state)
   }),
-  { setName }
+  { setName, getAllItems }
 )(Navbar);
