@@ -1,14 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { setName, userSelector } from '../../ducks/auth';
 import { getAllItems } from '../../ducks/items';
 
 const Navbar = (props) => {
-  useEffect(() => {
-    props.getAllItems();
-    console.log('use effect navbar');
-  }, []);
-
   return (
     <div>
       <h2>Navbar test component</h2>

@@ -13,6 +13,9 @@ export const moduleName = 'items';
 const prefix = `${appName}/${moduleName}`;
 
 export const ADD_ITEM = `${prefix}/ADD_ITEM`;
+export const ADD_ITEM_REQUEST = `${prefix}/ADD_ITEM_REQUEST`;
+export const ADD_ITEM_SUCCESS = `${prefix}/ADD_ITEM_SUCCESS`;
+export const ADD_ITEM_ERROR = `${prefix}/ADD_ITEM_ERROR`;
 export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`;
 export const GET_ITEMS_START = `${prefix}/GET_ITEMS`;
 export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
@@ -39,6 +42,7 @@ export default function reducer(state = new ReducerRecord(), action) {
   switch (type) {
     case GET_ITEMS_START:
     case DELETE_ITEM_REQUEST:
+    case ADD_ITEM_REQUEST:
       return state.set('loading', true);
 
     case GET_ITEMS_SUCCESS:
@@ -48,7 +52,15 @@ export default function reducer(state = new ReducerRecord(), action) {
         .set('error', null);
 
     case GET_ITEMS_ERROR:
+    case DELETE_ITEM_ERROR:
+    case ADD_ITEM_ERROR:
       return state.set('error', payload.err).set('loading', false);
+
+    case ADD_ITEM_SUCCESS:
+      return state
+        .set('loading', false)
+        .set('error', null)
+        .update('shoppingList', (shoppingList) => shoppingList.concat(payload));
 
     case ADD_ITEM:
       return state
@@ -96,7 +108,7 @@ export const shoppingListSelector = createSelector(
  * */
 export const addItem = (name) => {
   return {
-    type: ADD_ITEM,
+    type: ADD_ITEM_REQUEST,
     payload: { name }
   };
 };
@@ -176,9 +188,28 @@ export function* deleteItemSaga(action) {
   }
 }
 
+export function* addItemSaga(action) {
+  const { payload } = action;
+
+  try {
+    const { data } = yield call(API.addItem, payload.name);
+    yield put({
+      type: ADD_ITEM_SUCCESS,
+      payload: data
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ADD_ITEM_ERROR,
+      payload: { err }
+    });
+  }
+}
+
 export function* saga() {
   yield all([
     takeEvery(FETCH_ALL_REQUEST, getItemsSaga),
-    takeEvery(DELETE_ITEM_REQUEST, deleteItemSaga)
+    takeEvery(DELETE_ITEM_REQUEST, deleteItemSaga),
+    takeEvery(ADD_ITEM_REQUEST, addItemSaga)
   ]);
 }

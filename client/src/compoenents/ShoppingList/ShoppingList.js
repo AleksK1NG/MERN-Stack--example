@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem, Container, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
   addItem,
   deleteItem,
+  getAllItems,
   itemsSelector,
   shoppingListSelector
 } from '../../ducks/items';
 
 const ShoppingList = (props) => {
+  useEffect(() => {
+    props.getAllItems();
+  }, []);
+
   const handleAddItem = () => {
-    const name = prompt('Enter item name');
-    if (name) {
-      props.addItem(name);
+    const itemName = prompt('Enter item name');
+    if (itemName) {
+      props.addItem({ name: itemName });
     }
   };
 
@@ -56,5 +61,5 @@ export default connect(
     items: itemsSelector(state),
     shoppingList: shoppingListSelector(state)
   }),
-  { addItem, deleteItem }
+  { addItem, deleteItem, getAllItems }
 )(ShoppingList);
