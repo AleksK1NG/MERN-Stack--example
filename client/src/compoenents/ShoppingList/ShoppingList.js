@@ -6,7 +6,6 @@ import {
   addItem,
   deleteItem,
   getAllItems,
-  itemsSelector,
   shoppingListSelector,
   loadingSelector
 } from '../../ducks/items';
@@ -68,7 +67,6 @@ const ShoppingList = (props) => {
 
 export default connect(
   (state) => ({
-    items: itemsSelector(state),
     shoppingList: shoppingListSelector(state),
     loading: loadingSelector(state)
   }),

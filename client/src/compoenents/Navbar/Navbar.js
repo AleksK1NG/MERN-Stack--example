@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { setName, userSelector } from '../../ducks/auth';
-import { getAllItems } from '../../ducks/items';
 
 const Navbar = (props) => {
   return (
@@ -21,5 +20,5 @@ export default connect(
   (state) => ({
     user: userSelector(state)
   }),
-  { setName, getAllItems }
+  { setName }
 )(Navbar);

@@ -12,7 +12,6 @@ import API from '../services/api';
 export const moduleName = 'items';
 const prefix = `${appName}/${moduleName}`;
 
-export const ADD_ITEM = `${prefix}/ADD_ITEM`;
 export const ADD_ITEM_REQUEST = `${prefix}/ADD_ITEM_REQUEST`;
 export const ADD_ITEM_SUCCESS = `${prefix}/ADD_ITEM_SUCCESS`;
 export const ADD_ITEM_ERROR = `${prefix}/ADD_ITEM_ERROR`;
@@ -20,7 +19,6 @@ export const FETCH_ALL_REQUEST = `${prefix}/FETCH_ALL_REQUEST`;
 export const GET_ALL_ITEMS_REQUEST = `${prefix}/GET_ITEMS`;
 export const GET_ITEMS_SUCCESS = `${prefix}/GET_ITEMS_SUCCESS`;
 export const GET_ITEMS_ERROR = `${prefix}/GET_ITEMS_ERROR`;
-export const DELETE_ITEM = `${prefix}/DELETE_ITEM`;
 export const DELETE_ITEM_REQUEST = `${prefix}/DELETE_ITEM_REQUEST`;
 export const DELETE_ITEM_SUCCESS = `${prefix}/DELETE_ITEM_SUCCESS`;
 export const DELETE_ITEM_ERROR = `${prefix}/DELETE_ITEM_ERROR`;
@@ -62,19 +60,6 @@ export default function reducer(state = new ReducerRecord(), action) {
         .set('error', null)
         .update('shoppingList', (shoppingList) => shoppingList.concat(payload));
 
-    case ADD_ITEM:
-      return state
-        .update('items', (items) =>
-          items.push({ id: uuid(), name: payload.name })
-        )
-        .set('loading', false)
-        .set('error', null);
-
-    case DELETE_ITEM:
-      return state.update('items', (items) =>
-        items.filter((item) => item.id !== payload.id)
-      );
-
     case DELETE_ITEM_SUCCESS:
       return state
         .set('loading', false)
@@ -94,10 +79,6 @@ export default function reducer(state = new ReducerRecord(), action) {
 
 export const stateSelector = (state) => state[moduleName];
 export const userSelector = (state) => state[moduleName].user;
-export const itemsSelector = createSelector(
-  stateSelector,
-  (state) => state.items
-);
 export const shoppingListSelector = createSelector(
   stateSelector,
   (state) => state.shoppingList
