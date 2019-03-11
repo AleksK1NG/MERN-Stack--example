@@ -7,15 +7,15 @@ class ApiService {
   signUp = (email, password) => {};
   getItems() {
     localStorage.setItem('testToken', 'test token value');
-    return axios.get('http://localhost:5000/api/items');
+    return axios.get('/api/items');
   }
 
   addItem(item) {
-    return axios.post('http://localhost:5000/api/items', item);
+    return axios.post('/api/items', item);
   }
 
   deleteItem(id) {
-    return axios.delete(`http://localhost:5000/api/items/${id}`);
+    return axios.delete(`/api/items/${id}`);
   }
 }
 

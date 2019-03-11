@@ -1,16 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const itemsRoutes = require('./routes/api/items');
+const usersRoutes = require('./routes/api/users');
 
 const app = express();
 
 /*
  * BodyParser middleware
  * */
-app.use(bodyParser.json());
+app.use(express.json());
 
 /*
  * CORS Setup middleware
@@ -34,7 +34,7 @@ const db = require('./config/keys').mongoURI;
  * Connect to MongoDB
  * */
 mongoose
-  .connect(db)
+  .connect(db, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => {
     console.log('MongoDB connected');
   })
@@ -46,6 +46,7 @@ mongoose
  * Routes
  * */
 app.use('/api/items', itemsRoutes);
+app.use('/api/users', usersRoutes);
 
 /*
  * Serve static assets if in production
