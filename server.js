@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const itemsRoutes = require('./routes/api/items');
 
@@ -12,8 +13,8 @@ const app = express();
 app.use(bodyParser.json());
 
 /*
-* CORS Setup middleware
-* */
+ * CORS Setup middleware
+ * */
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,DELETE,OPTIONS');
@@ -45,6 +46,18 @@ mongoose
  * Routes
  * */
 app.use('/api/items', itemsRoutes);
+
+/*
+ * Serve static assets if in production
+ * */
+if (process.env.NODE_ENV === 'production') {
+  //Se static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 /*
  *   Run server
