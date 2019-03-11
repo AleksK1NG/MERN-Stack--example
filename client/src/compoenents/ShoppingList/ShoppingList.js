@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem, Container, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
-  addItem,
   deleteItem,
   getAllItems,
   shoppingListSelector,
@@ -16,13 +15,6 @@ const ShoppingList = (props) => {
     props.getAllItems();
   }, []);
 
-  const handleAddItem = () => {
-    const itemName = prompt('Enter item name');
-    if (itemName) {
-      props.addItem({ name: itemName });
-    }
-  };
-
   if (props.loading) {
     return (
       <Container>
@@ -33,14 +25,6 @@ const ShoppingList = (props) => {
 
   return (
     <Container>
-      <Button
-        color="dark"
-        style={{ marginBottom: '2rem' }}
-        onClick={() => handleAddItem()}
-      >
-        Add Item
-      </Button>
-
       <ListGroup>
         <TransitionGroup className="shopping-list">
           {props.shoppingList &&
@@ -70,5 +54,5 @@ export default connect(
     shoppingList: shoppingListSelector(state),
     loading: loadingSelector(state)
   }),
-  { addItem, deleteItem, getAllItems }
+  { deleteItem, getAllItems }
 )(ShoppingList);

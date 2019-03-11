@@ -1,9 +1,8 @@
 import { appName } from '../config';
 import { Record, List } from 'immutable';
 import { createSelector } from 'reselect';
-import { takeEvery, call, put, all, take } from 'redux-saga/effects';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
 import items from '../mocks/shoppingList';
-import uuid from 'uuid';
 import API from '../services/api';
 
 /**
