@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
 /*
  * @route POST api/items
  * Create item
- * @ Public
+ * @ Private
  * */
 router.post('/', auth, (req, res) => {
   const newItem = new Item({
@@ -50,7 +50,7 @@ router.post('/', auth, (req, res) => {
 /*
  * @route DELETE api/items/:id
  * DELETE item
- * @ Public
+ * @ Private
  * */
 router.delete('/:id', auth, (req, res) => {
   Item.findById(req.params.id)
