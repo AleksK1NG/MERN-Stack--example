@@ -125,6 +125,7 @@ export const login = ({ email, password }) => {
 };
 
 export const logout = () => {
+  localStorage.removeItem('token');
   return {
     type: SIGN_OUT_SUCCESS
   };
@@ -175,7 +176,6 @@ export function* loginSaga(action) {
     const {
       data: { token, user }
     } = yield call(api.loginUser, { email, password });
-    debugger;
     localStorage.setItem('token', token);
     yield put({
       type: SIGN_IN_SUCCESS,
