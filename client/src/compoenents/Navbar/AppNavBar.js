@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
   Navbar,
   Collapse,
@@ -9,6 +10,10 @@ import {
   NavLink,
   Container
 } from 'reactstrap';
+import SigninModal from '../Auth/SigninModal/SigninModal';
+import SignupModal from '../Auth/SignupModal/SignupModal';
+import Signout from '../Auth/Signout/Signout';
+import { isAuthSelector } from '../../ducks/auth';
 
 const AppNavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +28,20 @@ const AppNavBar = (props) => {
             <NavItem>
               <NavLink href="https://github.com/AleksK1NG">GitHub</NavLink>
             </NavItem>
+            {!props.isAuthenticated ? (
+              <React.Fragment>
+                <NavItem>
+                  <SignupModal />
+                </NavItem>
+                <NavItem>
+                  <SigninModal />
+                </NavItem>
+              </React.Fragment>
+            ) : (
+              <NavItem>
+                <Signout />
+              </NavItem>
+            )}
           </Nav>
         </Collapse>
       </Container>
@@ -30,4 +49,9 @@ const AppNavBar = (props) => {
   );
 };
 
-export default AppNavBar;
+export default connect(
+  (state) => ({
+    isAuthenticated: isAuthSelector(state)
+  }),
+  {}
+)(AppNavBar);

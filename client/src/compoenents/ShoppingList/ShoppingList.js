@@ -9,9 +9,6 @@ import {
   loadingSelector
 } from '../../ducks/items';
 import Loader from '../Shared/Loader/Loader';
-import SignupModal from '../Auth/SignupModal/SignupModal';
-import SigninModal from '../Auth/SigninModal/SigninModal';
-import Signout from '../Auth/Signout/Signout';
 
 const ShoppingList = (props) => {
   useEffect(() => {
@@ -28,9 +25,6 @@ const ShoppingList = (props) => {
 
   return (
     <Container>
-      <SigninModal />
-      <SignupModal />
-      <Signout />
       <ListGroup>
         <TransitionGroup className="shopping-list">
           {props.shoppingList &&
