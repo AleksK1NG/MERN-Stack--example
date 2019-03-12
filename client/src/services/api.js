@@ -52,9 +52,8 @@ export default new ApiService();
 
 export const tokenConfig = () => {
   // Get token from localstorage
-  // const token = localStorage.getItem('token');
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjODY4MWFhNGEwNDQzMDVkODk5NTI2ZCIsImlhdCI6MTU1MjM4MDc3OCwiZXhwIjoxNTUyMzg0Mzc4fQ.HNd4KOpfyhzbcgxkYBysAXza3qQRMmDendSyjbOlbUo';
+  const token = localStorage.getItem('token');
+
   // Headers
   const config = {
     headers: {

@@ -10,7 +10,7 @@ const auth = (req, res, next) => {
 
   // Check for token
   if (!token) {
-    res.status(401).json({ message: 'No auth token' });
+    return res.status(401).json({ message: 'No auth token' });
   }
 
   try {

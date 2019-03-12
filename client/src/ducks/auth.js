@@ -1,5 +1,5 @@
 import { appName } from '../config';
-import { Record } from 'immutable';
+import { Record, Map } from 'immutable';
 import { createSelector } from 'reselect';
 import { takeEvery, call, put, all, take } from 'redux-saga/effects';
 import api from '../services/api';
@@ -28,7 +28,7 @@ export const LOAD_USER_ERROR = `${prefix}/LOAD_USER_ERROR`;
  * Reducer
  * */
 export const ReducerRecord = Record({
-  user: null,
+  user: new Map({}),
   error: null,
   isAuthenticated: null,
   isLoading: false
@@ -42,14 +42,23 @@ export default function reducer(state = new ReducerRecord(), action) {
     case SIGN_UP_REQUEST:
       return state.set('isLoading', true);
 
-    case SIGN_IN_SUCCESS:
     case SIGN_UP_SUCCESS:
-    case LOAD_USER_SUCCESS:
       return state
-        .set('user', payload.data)
-        .set('error', null)
+        .merge({ user: new Map(payload.user) })
         .set('isLoading', false)
-        .set('isAuthenticated', true);
+        .set('isAuthenticated', true)
+        .set('error', null);
+
+    case SIGN_IN_SUCCESS:
+    case LOAD_USER_SUCCESS:
+      return (
+        state
+          // .set('user', payload.data)
+          .merge({ user: new Map(payload.data) })
+          .set('error', null)
+          .set('isLoading', false)
+          .set('isAuthenticated', true)
+      );
 
     case SIGN_OUT_SUCCESS:
       return state
@@ -83,6 +92,11 @@ export const isAuthorizedSelector = createSelector(
 export const authError = createSelector(
   stateSelector,
   (state) => state.error
+);
+
+export const isAuthSelector = createSelector(
+  stateSelector,
+  (state) => state.isAuthenticated
 );
 
 /**
@@ -177,11 +191,15 @@ export function* registerSaga(action) {
     payload: { name, email, password }
   } = action;
   try {
-    const { token, user } = yield call(api.registerUser, {
+    const {
+      data: { token, user }
+    } = yield call(api.registerUser, {
       name,
       email,
       password
     });
+    debugger;
+
     localStorage.setItem('token', token);
     yield put({
       type: SIGN_UP_SUCCESS,
@@ -209,7 +227,7 @@ export function* loadUserSaga() {
     localStorage.removeItem('token');
     yield put({
       type: LOAD_USER_ERROR,
-      payload: error
+      payload: { error }
     });
   }
 }

@@ -9,6 +9,7 @@ import {
   loadingSelector
 } from '../../ducks/items';
 import Loader from '../Shared/Loader/Loader';
+import SignupModal from '../Auth/SignupModal/SignupModal';
 
 const ShoppingList = (props) => {
   useEffect(() => {
@@ -25,6 +26,7 @@ const ShoppingList = (props) => {
 
   return (
     <Container>
+      <SignupModal />
       <ListGroup>
         <TransitionGroup className="shopping-list">
           {props.shoppingList &&
