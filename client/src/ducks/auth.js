@@ -50,7 +50,6 @@ export default function reducer(state = new ReducerRecord(), action) {
         .set('error', null);
 
     case SIGN_IN_SUCCESS:
-    case LOAD_USER_SUCCESS:
       return (
         state
           // .set('user', payload.data)
@@ -59,6 +58,13 @@ export default function reducer(state = new ReducerRecord(), action) {
           .set('isLoading', false)
           .set('isAuthenticated', true)
       );
+
+    case LOAD_USER_SUCCESS:
+      return state
+        .merge({ user: new Map(payload.data) })
+        .set('error', null)
+        .set('isLoading', false)
+        .set('isAuthenticated', true);
 
     case SIGN_OUT_SUCCESS:
       return state
@@ -84,11 +90,7 @@ export default function reducer(state = new ReducerRecord(), action) {
  * */
 
 export const stateSelector = (state) => state[moduleName];
-export const userSelector = (state) => state[moduleName].user;
-export const isAuthorizedSelector = createSelector(
-  userSelector,
-  (user) => !!user
-);
+
 export const authError = createSelector(
   stateSelector,
   (state) => state.error
@@ -97,6 +99,11 @@ export const authError = createSelector(
 export const isAuthSelector = createSelector(
   stateSelector,
   (state) => state.isAuthenticated
+);
+
+export const userSelector = createSelector(
+  stateSelector,
+  (state) => state.toJS().user
 );
 
 /**

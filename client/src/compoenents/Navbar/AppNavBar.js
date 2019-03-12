@@ -13,7 +13,7 @@ import {
 import SigninModal from '../Auth/SigninModal/SigninModal';
 import SignupModal from '../Auth/SignupModal/SignupModal';
 import Signout from '../Auth/Signout/Signout';
-import { isAuthSelector } from '../../ducks/auth';
+import { isAuthSelector, userSelector } from '../../ducks/auth';
 
 const AppNavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,9 +38,18 @@ const AppNavBar = (props) => {
                 </NavItem>
               </React.Fragment>
             ) : (
-              <NavItem>
-                <Signout />
-              </NavItem>
+              <React.Fragment>
+                <NavItem>
+                  <span className="navbar-text mr-3">
+                    <strong>
+                      {props.user ? `Welcome ${props.user.name}` : ''}
+                    </strong>
+                  </span>
+                </NavItem>
+                <NavItem>
+                  <Signout />
+                </NavItem>
+              </React.Fragment>
             )}
           </Nav>
         </Collapse>
@@ -51,7 +60,8 @@ const AppNavBar = (props) => {
 
 export default connect(
   (state) => ({
-    isAuthenticated: isAuthSelector(state)
+    isAuthenticated: isAuthSelector(state),
+    user: userSelector(state)
   }),
   {}
 )(AppNavBar);
