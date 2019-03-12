@@ -54,7 +54,7 @@ export default function reducer(state = new ReducerRecord(), action) {
       return (
         state
           // .set('user', payload.data)
-          .merge({ user: new Map(payload.data) })
+          .merge({ user: new Map(payload.user) })
           .set('error', null)
           .set('isLoading', false)
           .set('isAuthenticated', true)
@@ -102,19 +102,6 @@ export const isAuthSelector = createSelector(
 /**
  * Action Creators
  * */
-// export function signIn(email, password) {
-//   return {
-//     type: SIGN_IN_REQUEST,
-//     payload: { email, password }
-//   };
-// }
-//
-// export function signUp(email, password) {
-//   return {
-//     type: SIGN_UP_REQUEST,
-//     payload: { email, password }
-//   };
-// }
 
 export function setName(name) {
   return {
@@ -127,6 +114,13 @@ export const register = ({ name, email, password }) => {
   return {
     type: SIGN_UP_REQUEST,
     payload: { name, email, password }
+  };
+};
+
+export const login = ({ email, password }) => {
+  return {
+    type: SIGN_IN_REQUEST,
+    payload: { email, password }
   };
 };
 
@@ -145,47 +139,6 @@ export const loadUser = () => {
  * Sagas
  */
 
-// export function* signInSaga() {
-//   for (let i = 0; i < 3; i++) {
-//     const {
-//       payload: { email, password }
-//     } = yield take(SIGN_IN_REQUEST);
-//     try {
-//       const user = yield call(api.signIn, email, password);
-//
-//       yield put({
-//         type: SIGN_IN_SUCCESS,
-//         payload: { user }
-//       });
-//     } catch (error) {
-//       yield put({
-//         type: SIGN_IN_ERROR,
-//         error
-//       });
-//     }
-//   }
-//
-//   yield put({
-//     type: SIGN_IN_LIMIT_REACHED
-//   });
-// }
-//
-// export function* signUpSaga({ payload: { email, password } }) {
-//   try {
-//     const user = yield call(api.signUp, email, password);
-//
-//     yield put({
-//       type: SIGN_UP_SUCCESS,
-//       payload: { user }
-//     });
-//   } catch (error) {
-//     yield put({
-//       type: SIGN_UP_ERROR,
-//       error
-//     });
-//   }
-// }
-
 export function* registerSaga(action) {
   const {
     payload: { name, email, password }
@@ -198,7 +151,6 @@ export function* registerSaga(action) {
       email,
       password
     });
-    debugger;
 
     localStorage.setItem('token', token);
     yield put({
@@ -210,7 +162,31 @@ export function* registerSaga(action) {
     localStorage.removeItem('token');
     yield put({
       type: SIGN_UP_ERROR,
-      payload: error
+      payload: { error }
+    });
+  }
+}
+
+export function* loginSaga(action) {
+  const {
+    payload: { email, password }
+  } = action;
+  try {
+    const {
+      data: { token, user }
+    } = yield call(api.loginUser, { email, password });
+    debugger;
+    localStorage.setItem('token', token);
+    yield put({
+      type: SIGN_IN_SUCCESS,
+      payload: { user }
+    });
+  } catch (error) {
+    console.log(error);
+    localStorage.removeItem('token');
+    yield put({
+      type: SIGN_IN_ERROR,
+      payload: { error }
     });
   }
 }
@@ -235,6 +211,7 @@ export function* loadUserSaga() {
 export function* saga() {
   yield all([
     takeEvery(SIGN_UP_REQUEST, registerSaga),
-    takeEvery(LOAD_USER_REQUEST, loadUserSaga)
+    takeEvery(LOAD_USER_REQUEST, loadUserSaga),
+    takeEvery(SIGN_IN_REQUEST, loginSaga)
   ]);
 }
