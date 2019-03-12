@@ -20,20 +20,22 @@ export const SIGN_UP_ERROR = `${prefix}/SIGN_UP_ERROR`;
 export const AUTH_STATE_CHANGE = `${prefix}/AUTH_STATE_CHANGE`;
 export const SET_NAME = `${prefix}/SET_NAME`;
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`;
+export const LOAD_USER_REQUEST = `${prefix}/LOAD_USER_REQUEST`;
+export const LOAD_USER_SUCCESS = `${prefix}/LOAD_USER_SUCCESS`;
+export const LOAD_USER_ERROR = `${prefix}/LOAD_USER_ERROR`;
 
 /**
  * Reducer
  * */
 export const ReducerRecord = Record({
-  user: 'Alex',
+  user: null,
   error: null,
-  token: localStorage.getItem('token'),
   isAuthenticated: null,
   isLoading: false
 });
 
 export default function reducer(state = new ReducerRecord(), action) {
-  const { type, payload, error } = action;
+  const { type, payload } = action;
 
   switch (type) {
     case SIGN_IN_REQUEST:
@@ -42,9 +44,9 @@ export default function reducer(state = new ReducerRecord(), action) {
 
     case SIGN_IN_SUCCESS:
     case SIGN_UP_SUCCESS:
-    case AUTH_STATE_CHANGE:
+    case LOAD_USER_SUCCESS:
       return state
-        .set('user', payload.user)
+        .set('user', payload.data)
         .set('error', null)
         .set('isLoading', false)
         .set('isAuthenticated', true);
@@ -53,15 +55,12 @@ export default function reducer(state = new ReducerRecord(), action) {
       return state
         .set('isLoading', false)
         .set('isAuthenticated', false)
-        .set('user', null)
-        .set('token', null);
+        .set('user', null);
 
     case SIGN_IN_ERROR:
     case SIGN_UP_ERROR:
-      return state.set('error', error).set('isLoading', false);
-
-    case SIGN_IN_LIMIT_REACHED:
-      return state.set('limitReached', true);
+    case LOAD_USER_ERROR:
+      return state.set('error', payload.error).set('isLoading', false);
 
     case SET_NAME:
       return state.set('user', payload.name);
@@ -123,6 +122,11 @@ export const logout = () => {
   };
 };
 
+export const loadUser = () => {
+  return {
+    type: LOAD_USER_REQUEST
+  };
+};
 /**
  * Sagas
  */
@@ -184,6 +188,8 @@ export function* registerSaga(action) {
       payload: { user }
     });
   } catch (error) {
+    console.log(error);
+    localStorage.removeItem('token');
     yield put({
       type: SIGN_UP_ERROR,
       payload: error
@@ -191,6 +197,26 @@ export function* registerSaga(action) {
   }
 }
 
+export function* loadUserSaga() {
+  try {
+    const { data } = yield call(api.loadUser);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      payload: { data }
+    });
+  } catch (error) {
+    console.log(error);
+    localStorage.removeItem('token');
+    yield put({
+      type: LOAD_USER_ERROR,
+      payload: error
+    });
+  }
+}
+
 export function* saga() {
-  yield all([takeEvery(SIGN_UP_REQUEST, registerSaga)]);
+  yield all([
+    takeEvery(SIGN_UP_REQUEST, registerSaga),
+    takeEvery(LOAD_USER_REQUEST, loadUserSaga)
+  ]);
 }
