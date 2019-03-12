@@ -5,6 +5,7 @@ const config = require('config');
 
 const itemsRoutes = require('./routes/api/items');
 const usersRoutes = require('./routes/api/users');
+const authRoutes = require('./routes/api/auth');
 
 const app = express();
 
@@ -48,6 +49,7 @@ mongoose
  * */
 app.use('/api/items', itemsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/auth', authRoutes);
 
 /*
  * Serve static assets if in production
