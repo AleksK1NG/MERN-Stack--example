@@ -34,12 +34,6 @@ const SignupModal = (props) => {
 
   const toggle = () => setModal((modal) => !modal);
 
-  // if (modal) {
-  //   if (props.isAuthenticated) {
-  //     toggle();
-  //   }
-  // }
-
   return (
     <div>
       <NavLink onClick={toggle} href="#">

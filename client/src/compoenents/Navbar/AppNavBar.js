@@ -63,5 +63,5 @@ export default connect(
     isAuthenticated: isAuthSelector(state),
     user: userSelector(state)
   }),
-  {}
+  null
 )(AppNavBar);

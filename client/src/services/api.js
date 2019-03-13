@@ -3,8 +3,6 @@ import axios from 'axios';
  * Api Service
  * */
 class ApiService {
-  signIn = (email, password) => {};
-  signUp = (email, password) => {};
   getItems() {
     return axios.get('/api/items');
   }
@@ -50,6 +48,9 @@ class ApiService {
 
 export default new ApiService();
 
+/*
+ * Add token to axios requests
+ * */
 export const tokenConfig = () => {
   // Get token from localstorage
   const token = localStorage.getItem('token');

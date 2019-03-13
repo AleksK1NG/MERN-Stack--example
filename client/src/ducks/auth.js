@@ -1,7 +1,7 @@
 import { appName } from '../config';
 import { Record, Map } from 'immutable';
 import { createSelector } from 'reselect';
-import { takeEvery, call, put, all, take } from 'redux-saga/effects';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
 import api from '../services/api';
 
 /**
@@ -13,12 +13,9 @@ const prefix = `${appName}/${moduleName}`;
 export const SIGN_IN_REQUEST = `${prefix}/SIGN_IN_REQUEST`;
 export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`;
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`;
-export const SIGN_IN_LIMIT_REACHED = `${prefix}/SIGN_IN_LIMIT_REACHED`;
 export const SIGN_UP_REQUEST = `${prefix}/SIGN_UP_REQUEST`;
 export const SIGN_UP_SUCCESS = `${prefix}/SIGN_UP_SUCCESS`;
 export const SIGN_UP_ERROR = `${prefix}/SIGN_UP_ERROR`;
-export const AUTH_STATE_CHANGE = `${prefix}/AUTH_STATE_CHANGE`;
-export const SET_NAME = `${prefix}/SET_NAME`;
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`;
 export const LOAD_USER_REQUEST = `${prefix}/LOAD_USER_REQUEST`;
 export const LOAD_USER_SUCCESS = `${prefix}/LOAD_USER_SUCCESS`;
@@ -77,9 +74,6 @@ export default function reducer(state = new ReducerRecord(), action) {
     case LOAD_USER_ERROR:
       return state.set('error', payload.error).set('isLoading', false);
 
-    case SET_NAME:
-      return state.set('user', payload.name);
-
     default:
       return state;
   }
@@ -91,7 +85,7 @@ export default function reducer(state = new ReducerRecord(), action) {
 
 export const stateSelector = (state) => state[moduleName];
 
-export const authError = createSelector(
+export const authErrorSelector = createSelector(
   stateSelector,
   (state) => state.error
 );
@@ -109,13 +103,6 @@ export const userSelector = createSelector(
 /**
  * Action Creators
  * */
-
-export function setName(name) {
-  return {
-    type: SET_NAME,
-    payload: { name }
-  };
-}
 
 export const register = ({ name, email, password }) => {
   return {

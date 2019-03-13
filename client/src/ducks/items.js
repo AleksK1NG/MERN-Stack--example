@@ -2,7 +2,6 @@ import { appName } from '../config';
 import { Record, List } from 'immutable';
 import { createSelector } from 'reselect';
 import { takeEvery, call, put, all } from 'redux-saga/effects';
-import items from '../mocks/shoppingList';
 import API from '../services/api';
 
 /**
@@ -29,7 +28,6 @@ export const ReducerRecord = Record({
   user: 'Alex',
   error: null,
   loading: false,
-  items: new List(items),
   shoppingList: new List([])
 });
 
@@ -77,7 +75,6 @@ export default function reducer(state = new ReducerRecord(), action) {
  * */
 
 export const stateSelector = (state) => state[moduleName];
-export const userSelector = (state) => state[moduleName].user;
 export const shoppingListSelector = createSelector(
   stateSelector,
   (state) => state.shoppingList
@@ -109,31 +106,12 @@ export const getAllItems = () => {
     type: FETCH_ALL_REQUEST
   };
 };
-// export function signIn(email, password) {
-//   return {
-//     type: SIGN_IN_REQUEST,
-//     payload: { email, password }
-//   };
-// }
-//
-// export function signUp(email, password) {
-//   return {
-//     type: SIGN_UP_REQUEST,
-//     payload: { email, password }
-//   };
-// }
-//
-// export function setName(name) {
-//   return {
-//     type: SET_NAME,
-//     payload: { name }
-//   };
-// }
+
 /**
  * Sagas
  */
 
-export function* getItemsSaga(action) {
+export function* getItemsSaga() {
   try {
     yield put({
       type: GET_ALL_ITEMS_REQUEST
